@@ -104,82 +104,84 @@ h1{
 
     </main>
     <script>
-        let boxes=document.querySelectorAll(".box");
-let resetGameBtn=document.querySelector('#resetGame');
-let newGameBtn=document.querySelector('#newGame');
-let msgContainer=document.querySelector('.msg-container');
-let msg=document.querySelector('#msg');
+        let boxes = document.querySelectorAll(".box");
+        let resetGameBtn = document.querySelector('#resetGame');
+        let newGameBtn = document.querySelector('#newGame');
+        let msgContainer = document.querySelector('.msg-container');
+        let msg = document.querySelector('#msg');
 
-let winPattern=[
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-];
+        let winPattern = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6],
+        ];
 
-const resetGame=()=>{
-    turnO=true;
-    enableBoxes();
-    msgContainer.classList.add('hide');
+        const resetGame = () => {
+            turnO = true;
+            enableBoxes();
+            msgContainer.classList.add('hide');
+        };
 
-}
-let turnO=true;
+        let turnO = true;
 
-boxes.forEach((box) => {
-    box.addEventListener("click",()=>{
-        if(turnO){
-            box.innerHTML="✔";
-            turnO=false;
-        }else{
-            box.innerHTML="X";
-            turnO=true;
-        }
-        box.disabled=true;
+        boxes.forEach((box) => {
+            box.addEventListener("click", () => {
+                if (turnO) {
+                    box.innerHTML = "O";
+                    turnO = false;
+                } else {
+                    box.innerHTML = "X";
+                    turnO = true;
+                }
+                box.disabled = true;
+                checkWinner();
+            });
+        });
 
-        checkWinner();
-    });
-    
-});
-
-const disabledBoxes=()=>{
-    for(let box of boxes){
-    box.disabled=true;
-    }
-}
-
-const enableBoxes=()=>{
-    for(let box of boxes){
-    box.disabled=false;
-    box.innerText="";
-    }
-}
-
-const showWinner = (winner) => {
-    msg.innerText = `Congratulations! Winner is ${winner}`; // Fixed case and template literal
-    msgContainer.classList.remove('hide');
-    disabledBoxes();
-};
-
-
-let checkWinner=()=>{
-    for(let pattern of winPattern){
-           let post1val= boxes[pattern[0]].innerText;
-           let post2val= boxes[pattern[1]].innerText;
-           let post3val= boxes[pattern[2]].innerText;
-           if(post1val!="" && post2val!="" && post3val!=""){
-            if(post1val === post2val && post2val === post3val){
-                showWinner(post1val);
+        const disabledBoxes = () => {
+            for (let box of boxes) {
+                box.disabled = true;
             }
-           }
-    }
-}
+        };
 
-newGameBtn.addEventListener("click",resetGame);
-resetGameBtn.addEventListener("click",resetGame);
+        const enableBoxes = () => {
+            for (let box of boxes) {
+                box.disabled = false;
+                box.innerText = "";
+            }
+        };
+
+        const showWinner = (winner) => {
+            msg.innerText = `Congratulations! Winner is ${winner}`;
+            msgContainer.classList.remove('hide');
+            disabledBoxes();
+        };
+
+        const showDraw = () => {
+            msg.innerText = "It's a Draw!";
+            msgContainer.classList.remove('hide');
+            disabledBoxes();
+        };
+
+        const checkWinner = () => {
+            let isDraw = true;
+            
+            for (let pattern of winPattern) {
+                let [a, b, c] = pattern;
+                if (boxes[a].innerText && boxes[a].innerText === boxes[b].innerText && boxes[a].innerText === boxes[c].innerText) {
+                    showWinner(boxes[a].innerText);
+                    return;
+                }
+                if (boxes[a].innerText === "" || boxes[b].innerText === "" || boxes[c].innerText === "") isDraw = false;
+            }
+            
+            if (isDraw) {
+                showDraw();
+            }
+        };
+
+        newGameBtn.addEventListener("click", resetGame);
+        resetGameBtn.addEventListener("click", resetGame);
     </script>
 
 </body>
